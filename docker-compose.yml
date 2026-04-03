@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: jobwatcher
+      POSTGRES_PASSWORD: jobwatcher
+      POSTGRES_DB: jobwatcher
+    ports:
+      - "5432:5432"
+    volumes:
+      - jobwatcher_pg:/var/lib/postgresql/data
+
+volumes:
+  jobwatcher_pg:
