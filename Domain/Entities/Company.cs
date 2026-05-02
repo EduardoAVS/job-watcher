@@ -1,14 +1,14 @@
 namespace JobWatcher.Domain.Entities;
 
-public class TrackedPage
+public class Company
 {
     public long Id { get; private set; }
-    public string Url { get; private set; } // Unique no SGBD
+    public string Name { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
-    public TrackedPage(string url)
+    public Company(string name)
     {
-        Url = url;
+        Name = name;
         CreatedAt = DateTimeOffset.UtcNow;
     }
-    private TrackedPage() { }
+    private Company() { }
 }
