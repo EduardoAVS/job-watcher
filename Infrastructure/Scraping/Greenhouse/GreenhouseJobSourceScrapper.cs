@@ -1,6 +1,6 @@
+using System.Net.Http.Json;
 using JobWatcher.Application.Scraping;
 using JobWatcher.Domain.Entities;
-using System.Net.Http.Json;
 
 namespace JobWatcher.Infrastructure.Scraping.Greenhouse;
 
@@ -19,11 +19,29 @@ public sealed class GreenhouseJobSourceScraper : IJobSourceScraper
         JobSource source,
         CancellationToken cancellationToken)
     {
-        using var response = await _httpClient.GetAsync(source.Url, cancellationToken);
+        var response = await _httpClient.GetFromJsonAsync<GreenhouseJobBoardResponse>(
+            source.Url,
+            cancellationToken);
 
-        response.EnsureSuccessStatusCode();
+        if (response is null)
+        {
+            return [];
+        }
 
-        // Por enquanto pode deixar assim e implementar o parse no próximo passo.
-        return [];
+        return response.Jobs
+            .Where(job =>
+                !string.IsNullOrWhiteSpace(job.Title) &&
+                !string.IsNullOrWhiteSpace(job.AbsoluteUrl))
+            .Select(job => new ScrapedJobPosting
+            {
+                Title = job.Title!,
+                Url = job.AbsoluteUrl!,
+                Location = job.Location?.Name,
+                Description = job.Content,
+                Department = GetDepartment(job),
+                PublishedAt = job.FirstPublished,
+                UpdatedAt = job.UpdatedAt
+            })
+            .ToList();
     }
 }

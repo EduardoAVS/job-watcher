@@ -75,6 +75,15 @@ public class MonitoringWorker : BackgroundService
                 jobSource,
                 cancellationToken);
 
+            foreach (var scrapedJob in scrapedJobs.Take(3))
+            {
+                _logger.LogInformation(
+                    "Scraped job: {Title} | {Location} | {Url}",
+                    scrapedJob.Title,
+                    scrapedJob.Location,
+                    scrapedJob.Url);
+            }
+
             _logger.LogInformation(
                 "JobSource {JobSourceId} from company {CompanyName} using {SourceType} returned {Count} jobs.",
                 jobSource.Id,

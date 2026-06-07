@@ -6,5 +6,6 @@ public sealed class ScrapedJobPosting
     public string Url { get; init; } = string.Empty;
     public string? Location { get; init; }
     public string? Description { get; init; }
+    public string? Department { get; init; }
     public DateTimeOffset? PublishedAt { get; init; }
 }
